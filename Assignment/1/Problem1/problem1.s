@@ -1,0 +1,40 @@
+	AREA ARMex, CODE, READONLY
+		ENTRY
+start
+	LDR r0, TEMPADDR1
+	LDR r1, TEMPADDR2
+	LDR r2, TEMPADDR3
+	
+	MOV r6, #0x0A
+	MOV	r7, #0x01
+	MOV r8, #0xFF
+	
+	STRB r6, [r0]
+	STRB r7, [r1]
+	STRB r8, [r2]
+	
+	LDRB r0, [r0]
+	LDRB r1, [r1]
+	LDRB r2, [r2]
+	
+TEMPADDR1	&	&00001000
+TEMPADDR2	&	&00001001
+TEMPADDR3	&	&00001002
+
+	CMP r6, #0x0A
+	MOVGT r5, #1
+	MOVMI r5, #2
+	MOVEQ r5, #3
+	
+	CMP r7, #0x0A
+	MOVGT r5, #1
+	MOVMI r5, #2
+	MOVEQ r5, #3
+	
+	CMP r8, #0x0A
+	MOVGT r5, #1
+	MOVMI r5, #2
+	MOVEQ r5, #3
+	
+	MOV pc, lr
+END

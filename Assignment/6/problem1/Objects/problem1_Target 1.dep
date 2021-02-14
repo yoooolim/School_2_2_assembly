@@ -1,0 +1,2 @@
+Dependencies for Project 'problem1', Target 'Target 1': (DO NOT MODIFY !)
+F (.\strcpy.s)(0x5BDFC38F)(--cpu ARM9E --pd "__EVAL SETA 1" -g --apcs=interwork -IC:\Keil_v5\ARM\RV31\INC-IC:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 525"--list .\listings\strcpy.lst --xref -o .\objects\strcpy.o --depend .\objects\strcpy.d)

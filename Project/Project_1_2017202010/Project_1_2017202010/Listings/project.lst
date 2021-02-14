@@ -1,0 +1,1231 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             Project ,CODE, READONLY
+    2 00000000                 ENTRY
+    3 00000000         start
+    4 00000000 E59F04E8        LDR              r0, try
+    5 00000004 E51FA008        LDR              r10, Result_data
+    6 00000008 E580A000        STR              r10, [r0]
+    7 0000000C         
+    8 0000000C E59FA4D8        LDR              r10, odd_Result_data
+    9 00000010 E580A004        STR              r10, [r0, #4]
+   10 00000014         
+   11 00000014 E59FA4DC        LDR              r10, =Matrix_data
+   12 00000018 E28AA008        ADD              r10, #8
+   13 0000001C E580A008        STR              r10, [r0, #8]
+   14 00000020         
+   15 00000020 E59FA4D0        LDR              r10, =Matrix_data
+   16 00000024 E28AA004        ADD              r10, #4
+   17 00000028 E580A00C        STR              r10, [r0, #12]
+   18 0000002C         
+   19 0000002C E3A00000        MOV              r0, #0
+   20 00000030 E3A0A000        MOV              r10, #0
+   21 00000034 E3A0B000        MOV              r11, #0
+   22 00000038 E3A0C000        MOV              r12, #0
+   23 0000003C         
+   24 0000003C EA00000E        B                rolling_setting
+   25 00000040         
+   26 00000040         start2
+   27 00000040 E59F04A8        LDR              r0, try
+   28 00000044 E51FA008        LDR              r10, Result_data
+   29 00000048 E580A000        STR              r10, [r0]
+   30 0000004C         
+   31 0000004C E59FA498        LDR              r10, odd_Result_data
+   32 00000050 E580A004        STR              r10, [r0, #4]
+   33 00000054         
+   34 00000054 E59FA498        LDR              r10, load_data
+   35 00000058 E580A008        STR              r10, [r0, #8]
+   36 0000005C         
+   37 0000005C E59FA490        LDR              r10, load_data
+   38 00000060 E24AA004        SUB              r10, r10, #4
+   39 00000064 E580A00C        STR              r10, [r0, #12]
+   40 00000068         
+   41 00000068 E3A00000        MOV              r0, #0
+   42 0000006C E3A0A000        MOV              r10, #0
+   43 00000070 E3A0B000        MOV              r11, #0
+   44 00000074 E3A0C000        MOV              r12, #0
+   45 00000078         
+   46 00000078 EAFFFFFF        B                rolling_setting
+   47 0000007C         
+   48 0000007C         
+   49 0000007C         rolling_setting
+   50 0000007C E59F146C        LDR              r1, try
+   51 00000080         ; STR r0, [r1, #8]
+   52 00000080         ; STR r10, [r1,#4]
+   53 00000080         
+   54 00000080 E591000C        LDR              r0, [r1, #12]
+   55 00000084 E2800004        ADD              r0, r0, #4
+   56 00000088         ; LDR r10, =Matrix_data ;length and scale
+   57 00000088         ; LDR r1, [r0], #4 ;length(N)
+   58 00000088         ; LDR r2, [r1], #4 ;interpolation scale(k)
+   59 00000088 E59FA460        LDR              r10, try
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+   60 0000008C E59AA000        LDR              r10, [r10]
+   61 00000090         
+   62 00000090         rolling
+   63 00000090         ; LDR r0, =Matrix_data ;data
+   64 00000090         ; ADD r0, #8  
+   65 00000090         ; LDR r10, Result_data
+   66 00000090         
+   67 00000090 E3E024FF        MOV              r2, #0xFFFFFF 
+                                                            ;calResult loop (i)
+                                                            
+   68 00000094         
+   69 00000094 E3A03004        MOV              r3, #4
+   70 00000098         
+   71 00000098 E5906000        LDR              r6, [r0]
+   72 0000009C E48A6004        STR              r6, [r10], #4 ;store A
+   73 000000A0 E5909004        LDR              r9, [r0, #4]
+   74 000000A4 EA00000D        B                calculate
+   75 000000A8         
+   76 000000A8         odd_rolling_setting                  ;already store odd_
+                                                            Result_data
+   77 000000A8         
+   78 000000A8 E3A0B000        MOV              r11, #0
+   79 000000AC E59F143C        LDR              r1, try
+   80 000000B0 E59F2434        LDR              r2, odd_Result_data
+   81 000000B4 E5812004        STR              r2, [r1,#4]
+   82 000000B8 E5810008        STR              r0, [r1, #8]
+   83 000000BC         
+   84 000000BC E59F0428        LDR              r0, odd_Result_data
+   85 000000C0         
+   86 000000C0 E591A000        LDR              r10, [r1]
+   87 000000C4 E08AA003        ADD              r10, r3
+   88 000000C8 E581A000        STR              r10, [r1]
+   89 000000CC         
+   90 000000CC         odd_rolling
+   91 000000CC E3E024FF        MOV              r2, #0xFFFFFF 
+                                                            ;calResult loop (i)
+                                                            
+   92 000000D0 E3A03004        MOV              r3, #4
+   93 000000D4         
+   94 000000D4 E5906000        LDR              r6, [r0]
+   95 000000D8 E48A6004        STR              r6, [r10], #4
+   96 000000DC E5909004        LDR              r9, [r0, #4]
+   97 000000E0         
+   98 000000E0         calculate
+   99 000000E0 E1A04FA6        MOV              r4, r6, LSR #31 ;S1
+  100 000000E4 E1A07FA9        MOV              r7, r9, LSR #31 ;S2
+  101 000000E8         
+  102 000000E8 E1A05086        MOV              r5, r6, LSL #1
+  103 000000EC E1A05C25        MOV              r5, r5, LSR #24 ;E1
+  104 000000F0 E1A08089        MOV              r8, r9, LSL #1
+  105 000000F4 E1A08C28        MOV              r8, r8, LSR #24 ;E2
+  106 000000F8         
+  107 000000F8 E1A06486        MOV              r6, r6, LSL #9
+  108 000000FC E1A064A6        MOV              r6, r6, LSR #9
+  109 00000100 E2866502        ADD              r6, r6, #0x800000 ;F1
+  110 00000104 E1A09489        MOV              r9, r9, LSL #9
+  111 00000108 E1A094A9        MOV              r9, r9, LSR #9
+  112 0000010C E2899502        ADD              r9, r9, #0x800000 ;F2
+  113 00000110         
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+  114 00000110 E1540007        CMP              r4,r7
+  115 00000114 1A0000E8        BNE              judge_result_zero
+  116 00000118         
+  117 00000118         cal_continue
+  118 00000118 E1580005        CMP              r8, r5      ;E2-E1
+  119 0000011C C0481005        SUBGT            r1, r8, r5
+  120 00000120 D0681005        RSBLE            r1, r8, r5  ;r1 = shift num
+  121 00000124         
+  122 00000124 C1A06136        MOVGT            r6, r6, LSR r1
+  123 00000128 B1A09139        MOVLT            r9, r9, LSR r1 ;shift right for
+                                                             shift num F whose 
+                                                            Exponent is smaller
+                                                            
+  124 0000012C         
+  125 0000012C E3A01000        MOV              r1, #0      ;initialize
+  126 00000130         
+  127 00000130 E1540007        CMP              r4, r7      ;check sign S1 - S2
+                                                            
+  128 00000134 0A000004        BEQ              equalSign
+  129 00000138         
+  130 00000138 E1560009        CMP              r6, r9      ;F1 - F2 ; S1 != S2
+                                                            
+  131 0000013C C0466009        SUBGT            r6, r6, r9
+  132 00000140 D0496006        SUBLE            r6, r9, r6  ;r6 = F_result_ing
+  133 00000144 E3A09001        MOV              r9, #1      ;initialize of reg9
+                                                            
+  134 00000148         
+  135 00000148 EA000001        B                calExponent
+  136 0000014C         
+  137 0000014C         equalSign                            ;S1 == S2
+  138 0000014C E0866009        ADD              r6, r6, r9
+  139 00000150 E3A09001        MOV              r9, #1
+  140 00000154         
+  141 00000154         calExponent
+  142 00000154 E1560002        CMP              r6, r2
+  143 00000158 C1A060A6        MOVGT            r6, r6, LSR #1
+  144 0000015C C3A02000        MOVGT            r2, #0      ;initialize of reg2
+                                                            
+  145 00000160 CA000003        BGT              calResult
+  146 00000164 E2499001        SUB              r9, r9, #1  ;r9 = calResult val
+                                                            ue1
+  147 00000168 E1A020A2        MOV              r2, r2, LSR #1 ;r2 = calExponen
+                                                            t loop (i)
+  148 0000016C E2811001        ADD              r1, r1, #1  ;r1 = calResult val
+                                                            ue2
+  149 00000170 EAFFFFF7        B                calExponent
+  150 00000174         
+  151 00000174         calResult
+  152 00000174 E1A06116        MOV              r6, r6, LSL r1 ;F_result
+  153 00000178 E1550008        CMP              r5, r8      ;E1 - E2
+  154 0000017C 41A01008        MOVMI            r1, r8      ;E2 = r1
+  155 00000180 A1A01005        MOVGE            r1, r5      ;E1 = r1
+  156 00000184 E0815009        ADD              r5, r1, r9  ;r5 = E_result_ing
+  157 00000188 E3A01000        MOV              r1, #0      ;initialize of reg1
+                                                             
+  158 0000018C E3A09000        MOV              r9, #0      ;initialize of reg9
+                                                            
+  159 00000190 E3A08000        MOV              r8, #0      ;initailize of reg8
+                                                            
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+  160 00000194         
+  161 00000194 E3530004        CMP              r3, #4
+  162 00000198 0A00002B        BEQ              store_even
+  163 0000019C         
+  164 0000019C E1540007        CMP              r4, r7
+  165 000001A0 E5901000        LDR              r1, [r0]
+  166 000001A4 E59A9000        LDR              r9, [r10]
+  167 000001A8 11A01081        MOVNE            r1, r1, LSL #1
+  168 000001AC 11A010A1        MOVNE            r1, r1, LSR #1
+  169 000001B0 11A09089        MOVNE            r9, r9, LSL #1
+  170 000001B4 11A090A9        MOVNE            r9, r9, LSR #1
+  171 000001B8 E1510009        CMP              r1, r9
+  172 000001BC B1A04007        MOVLT            r4, r7
+  173 000001C0 E3A01000        MOV              r1, #0      ;initialize of reg1
+                                                            
+  174 000001C4 E3A09000        MOV              r9, #0      ;initialize of reg2
+                                                            
+  175 000001C8         
+  176 000001C8 E1A04F84        MOV              r4, r4, LSL #31 ;S_result
+  177 000001CC E2455001        SUB              r5, r5, #1  ;E_(A+B)/2_result
+  178 000001D0 E1A05B85        MOV              r5, r5, LSL #23 ;E_result
+  179 000001D4 E1A06486        MOV              r6, r6, LSL #9
+  180 000001D8 E1A064A6        MOV              r6, r6, LSR #9 ;F_result
+  181 000001DC         
+  182 000001DC E1A02004        MOV              r2, r4
+  183 000001E0 E0822005        ADD              r2, r2, r5
+  184 000001E4 E0822006        ADD              r2, r2, r6  ;r2 = result
+  185 000001E8         
+  186 000001E8 E3A04000        MOV              r4,#0
+  187 000001EC E3A05000        MOV              r5,#0
+  188 000001F0 E3A06000        MOV              r6,#0
+  189 000001F4         
+  190 000001F4 E59F12F4        LDR              r1, try
+  191 000001F8 E5911004        LDR              r1, [r1, #4]
+  192 000001FC         
+  193 000001FC E4812004        STR              r2, [r1], #4 ;store (A+B)/2
+  194 00000200         
+  195 00000200 E59F42E8        LDR              r4, try
+  196 00000204 E5841004        STR              r1, [r4,#4]
+  197 00000208 E3A04000        MOV              r4, #0
+  198 0000020C         
+  199 0000020C E59F12E4        LDR              r1, =Matrix_data ;for read N
+  200 00000210 E5912000        LDR              r2, [r1]    ;read N(length)
+  201 00000214 E3A01000        MOV              r1, #0
+  202 00000218         
+  203 00000218         store_odd_loop
+  204 00000218 E151000D        CMP              r1, r13
+  205 0000021C 0A000002        BEQ              store_odd_loop_end
+  206 00000220 E2811001        ADD              r1, r1, #1
+  207 00000224 E1A02082        MOV              r2, r2, LSL #1
+  208 00000228 EAFFFFFA        B                store_odd_loop
+  209 0000022C         
+  210 0000022C         store_odd_loop_end
+  211 0000022C E2422001        SUB              r2, r2, #1
+  212 00000230 E15B0002        CMP              r11, r2
+  213 00000234 0AFFFF9B        BEQ              odd_rolling_setting ;rolling ab
+                                                            out odd using odd_R
+                                                            esult_data
+  214 00000238         
+
+
+
+ARM Macro Assembler    Page 5 
+
+
+  215 00000238 E5B06004        LDR              r6, [r0,#4]!
+  216 0000023C E5BA9008        LDR              r9, [r10,#8]!
+  217 00000240 E3E024FF        MOV              r2, #0xFFFFFF 
+                                                            ;calResult loop (i)
+                                                            
+  218 00000244 E28BB001        ADD              r11, r11, #1
+  219 00000248 EAFFFFA4        B                calculate
+  220 0000024C         
+  221 0000024C         store_even
+  222 0000024C E1540007        CMP              r4,r7       ;S1 - S2 ;if sign i
+                                                            s different, check 
+                                                            result sign is nega
+                                                            tive or positive
+  223 00000250 E6901003        LDR              r1, [r0], r3
+  224 00000254 E5909000        LDR              r9, [r0]
+  225 00000258 11A01081        MOVNE            r1, r1, LSL #1
+  226 0000025C 11A010A1        MOVNE            r1, r1, LSR #1
+  227 00000260 11A09089        MOVNE            r9, r9, LSL #1
+  228 00000264 11A090A9        MOVNE            r9, r9, LSR #1
+  229 00000268 E1510009        CMP              r1, r9
+  230 0000026C B1A04007        MOVLT            r4, r7
+  231 00000270 E3A01000        MOV              r1, #0      ;initialize of reg1
+                                                            
+  232 00000274 E3A09000        MOV              r9, #0      ;initialize of reg2
+                                                            
+  233 00000278         
+  234 00000278 E1A04F84        MOV              r4, r4, LSL #31 ;S_result
+  235 0000027C E2455001        SUB              r5, r5, #1  ;E_(A+B)/2_result
+  236 00000280 E1A05B85        MOV              r5, r5, LSL #23 ;E_result
+  237 00000284 E1A06486        MOV              r6, r6, LSL #9
+  238 00000288 E1A064A6        MOV              r6, r6, LSR #9 ;F_result
+  239 0000028C         
+  240 0000028C E1A02004        MOV              r2, r4
+  241 00000290 E0822005        ADD              r2, r2, r5
+  242 00000294 E0822006        ADD              r2, r2, r6  ;r2 = result
+  243 00000298         
+  244 00000298 E48A2004        STR              r2, [r10], #4 ;store (A+B)/2
+  245 0000029C         
+  246 0000029C E3A02000        MOV              r2, #0
+  247 000002A0 E3A07000        MOV              r7, #0
+  248 000002A4 E3A08000        MOV              r8, #0
+  249 000002A8         
+  250 000002A8         ;calculate r3 = N*r13/2
+  251 000002A8 E59F2248        LDR              r2, =Matrix_data
+  252 000002AC E5922000        LDR              r2, [r2]
+  253 000002B0 E3A04000        MOV              r4, #0
+  254 000002B4         
+  255 000002B4         even_cal_loop
+  256 000002B4 E1A02082        MOV              r2, r2, LSL #1
+  257 000002B8 E15D0004        CMP              r13, r4
+  258 000002BC E2844001        ADD              r4, r4, #1
+  259 000002C0 03A04000        MOVEQ            r4, #0
+  260 000002C4 0A000000        BEQ              even_cal_loop_end
+  261 000002C8 EAFFFFF9        B                even_cal_loop
+  262 000002CC         
+  263 000002CC         even_cal_loop_end
+  264 000002CC E1A020A2        MOV              r2, r2, LSR #1
+  265 000002D0 E2422002        SUB              r2, r2, #2
+  266 000002D4 E15B0002        CMP              r11, r2
+
+
+
+ARM Macro Assembler    Page 6 
+
+
+  267 000002D8 E3A02000        MOV              r2, #0
+  268 000002DC 03A0B000        MOVEQ            r11, #0     ;initialize r11
+  269 000002E0 0A00000C        BEQ              padding
+  270 000002E4 E28BB001        ADD              r11, r11, #1
+  271 000002E8 E35C0001        CMP              r12, #1
+  272 000002EC DA000005        BLE              which_rolling_loop_end
+  273 000002F0 E1A0100C        MOV              r1, r12
+  274 000002F4         
+  275 000002F4         which_rolling_loop                   ;odd row or even ro
+                                                            w?
+  276 000002F4 E1A01F81        MOV              r1, r1, LSL #31
+  277 000002F8 E1A01FA1        MOV              r1, r1, LSR #31
+  278 000002FC E3510001        CMP              r1, #1
+  279 00000300 DA000000        BLE              which_rolling_loop_end
+  280 00000304 EAFFFFFA        B                which_rolling_loop
+  281 00000308         
+  282 00000308         which_rolling_loop_end
+  283 00000308 E3510000        CMP              r1, #0
+  284 0000030C E3A01000        MOV              r1, #0
+  285 00000310 0AFFFF6D        BEQ              odd_rolling
+  286 00000314 EAFFFF5D        B                rolling
+  287 00000318         
+  288 00000318         padding
+  289 00000318 E3A0B000        MOV              r11, #0     ;initialize column
+  290 0000031C E5902000        LDR              r2, [r0]
+  291 00000320 E48A2004        STR              r2, [r10], #4 ;store A
+  292 00000324 E48A2004        STR              r2, [r10], #4 ;padding
+  293 00000328         
+  294 00000328 E59F11C8        LDR              r1, =Matrix_data ;for read N
+  295 0000032C E5912000        LDR              r2, [r1]
+  296 00000330 E3A04000        MOV              r4, #0
+  297 00000334         
+  298 00000334         padding_loop1
+  299 00000334 E1A02082        MOV              r2, r2, LSL #1
+  300 00000338 E15D0004        CMP              r13, r4
+  301 0000033C E2844001        ADD              r4, r4, #1
+  302 00000340 03A04000        MOVEQ            r4, #0
+  303 00000344 0A000000        BEQ              padding_loop1_end
+  304 00000348 EAFFFFF9        B                padding_loop1
+  305 0000034C         
+  306 0000034C         padding_loop1_end
+  307 0000034C E3A01000        MOV              r1, #0
+  308 00000350 E2422002        SUB              r2, #2
+  309 00000354 E152000C        CMP              r2, r12     ;check is it over (
+                                                            twice=NxN)
+  310 00000358 E3A02000        MOV              r2, #0
+  311 0000035C 0A00000C        BEQ              last_row_padding ;twice(NxN)=ro
+                                                            w is over
+  312 00000360         
+  313 00000360 E35C0001        CMP              r12, #1
+  314 00000364 E1A0100C        MOV              r1, r12
+  315 00000368 DA000001        BLE              padding_loop_end
+  316 0000036C         
+  317 0000036C         padding_loop                         ;odd row or even ro
+                                                            w?
+  318 0000036C E1A01F81        MOV              r1, r1, LSL #31
+  319 00000370 E1A01FA1        MOV              r1, r1, LSR #31
+  320 00000374         
+  321 00000374         padding_loop_end
+
+
+
+ARM Macro Assembler    Page 7 
+
+
+  322 00000374 E3510000        CMP              r1,#0
+  323 00000378 028CC001        ADDEQ            r12, r12, #1
+  324 0000037C 0A00003D        BEQ              odd_calculate
+  325 00000380         
+  326 00000380 E2800004        ADD              r0, #4
+  327 00000384 E28CC001        ADD              r12, r12, #1
+  328 00000388 E59F1160        LDR              r1, try
+  329 0000038C E581A000        STR              r10, [r1]
+  330 00000390 EAFFFF39        B                rolling_setting ;more need for 
+                                                            under
+  331 00000394         
+  332 00000394         last_row_padding
+  333 00000394         ;calculate r3 = 4*N*r13
+  334 00000394 E59F315C        LDR              r3, =Matrix_data
+  335 00000398 E5933000        LDR              r3, [r3]
+  336 0000039C E1A03103        MOV              r3, r3, LSL #2 ;4 * N
+  337 000003A0 E3A04000        MOV              r4, #0
+  338 000003A4         
+  339 000003A4         last_row_cal
+  340 000003A4 E0833003        ADD              r3, r3, r3
+  341 000003A8 E15D0004        CMP              r13, r4
+  342 000003AC E2844001        ADD              r4, r4, #1
+  343 000003B0 03A04000        MOVEQ            r4, #0
+  344 000003B4 0A000000        BEQ              last_row_cal_end
+  345 000003B8 EAFFFFF9        B                last_row_cal
+  346 000003BC         
+  347 000003BC         last_row_cal_end
+  348 000003BC E59F112C        LDR              r1, try
+  349 000003C0 E5910000        LDR              r0, [r1]
+  350 000003C4         
+  351 000003C4         last_row_loop
+  352 000003C4 E1540003        CMP              r4, r3
+  353 000003C8 03A04000        MOVEQ            r4, #0
+  354 000003CC 0A000004        BEQ              checkover
+  355 000003D0 E5901000        LDR              r1, [r0]
+  356 000003D4 E7801003        STR              r1, [r0, r3]
+  357 000003D8 E2844004        ADD              r4, r4, #4
+  358 000003DC E2800004        ADD              r0, r0, #4
+  359 000003E0 EAFFFFF7        B                last_row_loop
+  360 000003E4         
+  361 000003E4         checkover
+  362 000003E4 E3A0C000        MOV              r12, #0     ;intialize row
+  363 000003E8 E28DD001        ADD              r13, r13, #1
+  364 000003EC E59F1104        LDR              r1, =Matrix_data ;for read N
+  365 000003F0 E5912004        LDR              r2, [r1, #4] ;scale
+  366 000003F4 E3A01000        MOV              r1, #0
+  367 000003F8 E152000D        CMP              r2, r13
+  368 000003FC 03A02000        MOVEQ            r2, #0
+  369 00000400 0A000038        BEQ              endline
+  370 00000404         
+  371 00000404         ;calculate r3 = 4*N*r13
+  372 00000404 E59F70EC        LDR              r7, =Matrix_data
+  373 00000408 E5977000        LDR              r7, [r7]
+  374 0000040C E3A04000        MOV              r4, #0
+  375 00000410         
+  376 00000410         checkover_loop
+  377 00000410 E0877007        ADD              r7, r7, r7
+  378 00000414 E2844001        ADD              r4, r4, #1
+  379 00000418 E15D0004        CMP              r13, r4
+
+
+
+ARM Macro Assembler    Page 8 
+
+
+  380 0000041C 03A04000        MOVEQ            r4, #0
+  381 00000420 01A08007        MOVEQ            r8, r7
+  382 00000424 02488001        SUBEQ            r8, r8, #1
+  383 00000428 01A09007        MOVEQ            r9, r7
+  384 0000042C 0A000000        BEQ              checkover_loop_2
+  385 00000430 EAFFFFF6        B                checkover_loop
+  386 00000434         
+  387 00000434         checkover_loop_2
+  388 00000434 E0877009        ADD              r7, r7, r9
+  389 00000438 E2844001        ADD              r4, r4, #1
+  390 0000043C E1580004        CMP              r8, r4
+  391 00000440 03A04000        MOVEQ            r4, #0
+  392 00000444 03A08000        MOVEQ            r8, #0
+  393 00000448 03A09000        MOVEQ            r9, #0
+  394 0000044C 0A000000        BEQ              checkover_loop_end
+  395 00000450 EAFFFFF7        B                checkover_loop_2
+  396 00000454         
+  397 00000454         
+  398 00000454         checkover_loop_end
+  399 00000454 E51F0008        LDR              r0, Result_data
+  400 00000458 E59F1094        LDR              r1, load_data
+  401 0000045C         
+  402 0000045C         load
+  403 0000045C E4905004        LDR              r5, [r0], #4
+  404 00000460 E4815004        STR              r5, [r1], #4
+  405 00000464 E5816000        STR              r6, [r1]
+  406 00000468 E2844001        ADD              r4, r4, #1
+  407 0000046C E1540007        CMP              r4, r7
+  408 00000470 1AFFFFF9        BNE              load
+  409 00000474 0AFFFEF1        BEQ              start2
+  410 00000478         
+  411 00000478         odd_calculate
+  412 00000478 E59F1070        LDR              r1, try
+  413 0000047C E581000C        STR              r0, [r1,#12]
+  414 00000480 E3A01000        MOV              r1, #0
+  415 00000484         ;calculate r3 = 4*N*r13
+  416 00000484 E59F306C        LDR              r3, =Matrix_data
+  417 00000488 E5933000        LDR              r3, [r3]
+  418 0000048C E1A03103        MOV              r3, r3, LSL #2 ;4 * N
+  419 00000490 E3A04000        MOV              r4, #0
+  420 00000494         
+  421 00000494         odd_cal_loop
+  422 00000494 E1A03083        MOV              r3, r3, LSL #1
+  423 00000498 E15D0004        CMP              r13, r4
+  424 0000049C E2844001        ADD              r4, r4, #1
+  425 000004A0 03A04000        MOVEQ            r4, #0
+  426 000004A4 0A000000        BEQ              odd_cal_loop_end
+  427 000004A8 EAFFFFF9        B                odd_cal_loop
+  428 000004AC         
+  429 000004AC         odd_cal_loop_end
+  430 000004AC E3E024FF        MOV              r2, #0xFFFFFF 
+                                                            ;calResult loop (i)
+                                                            
+  431 000004B0         
+  432 000004B0 E5B06004        LDR              r6, [r0,#4]!
+  433 000004B4 E73A9003        LDR              r9, [r10, -r3]! ;24=4*3*2
+  434 000004B8         
+  435 000004B8 EAFFFF08        B                calculate
+  436 000004BC         
+
+
+
+ARM Macro Assembler    Page 9 
+
+
+  437 000004BC         judge_result_zero
+  438 000004BC E1550008        CMP              r5, r8
+  439 000004C0 1AFFFF14        BNE              cal_continue
+  440 000004C4 E1560009        CMP              r6, r9
+  441 000004C8 1AFFFF12        BNE              cal_continue
+  442 000004CC E3A04000        MOV              r4, #0
+  443 000004D0 E3A05000        MOV              r5, #0
+  444 000004D4 E3A06000        MOV              r6, #0
+  445 000004D8 E3A07000        MOV              r7, #0
+  446 000004DC E3A08000        MOV              r8, #0
+  447 000004E0 E3A09000        MOV              r9, #0
+  448 000004E4 EAFFFF22        B                calResult
+  449 000004E8         
+  450 000004E8         endline
+  451 000004E8 E1A0F00E        MOV              PC, LR
+  452 000004EC         
+  453 000004EC 50000000 
+                       odd_Result_data
+                               &                &50000000   ;address of odd res
+                                                            ult
+  454 000004F0         
+  455 000004F0 40000000 
+                       try     &                &40000000
+  456 000004F4         
+  457 000004F4 30000000 
+                       load_data
+                               &                &30000000
+  458 000004F8         
+  459 000004F8 00000000 
+              00000000 
+              00000000 
+              00000000 
+              00000000 
+              00000000 
+              00000000 
+              00000000 
+              00000000         AREA             DataArea, DATA
+  460 00000000 60000000 
+                       Result_data
+                               &                &60000000   ;address of result
+  461 00000004         
+  462 00000004         Matrix_data
+  463 00000004                 ALIGN
+  464 00000004 0000000A        DCD              10
+  465 00000008 00000003        DCD              3
+  466 0000000C 43200000        DCD              2_01000011001000000000000000000
+000
+  467 00000010 C3980000        DCD              2_11000011100110000000000000000
+000
+  468 00000014 43840000        DCD              2_01000011100001000000000000000
+000
+  469 00000018 C2800000        DCD              2_11000010100000000000000000000
+000
+  470 0000001C 43880000        DCD              2_01000011100010000000000000000
+000
+  471 00000020 C0640000        DCD              2_11000000011001000000000000000
+000
+  472 00000024 43D40000        DCD              2_01000011110101000000000000000
+000
+
+
+
+ARM Macro Assembler    Page 10 
+
+
+  473 00000028 C2080000        DCD              2_11000010000010000000000000000
+000
+  474 0000002C C0C40000        DCD              2_11000000110001000000000000000
+000
+  475 00000030 C0100000        DCD              2_11000000000100000000000000000
+000
+  476 00000034 3FA00000        DCD              2_00111111101000000000000000000
+000
+  477 00000038 C3280000        DCD              2_11000011001010000000000000000
+000
+  478 0000003C 43D00000        DCD              2_01000011110100000000000000000
+000
+  479 00000040 C1B00000        DCD              2_11000001101100000000000000000
+000
+  480 00000044 BFA80000        DCD              2_10111111101010000000000000000
+000
+  481 00000048 C3F40000        DCD              2_11000011111101000000000000000
+000
+  482 0000004C 3EE00000        DCD              2_00111110111000000000000000000
+000
+  483 00000050 C2980000        DCD              2_11000010100110000000000000000
+000
+  484 00000054 C2600000        DCD              2_11000010011000000000000000000
+000
+  485 00000058 42440000        DCD              2_01000010010001000000000000000
+000
+  486 0000005C 40C80000        DCD              2_01000000110010000000000000000
+000
+  487 00000060 C1100000        DCD              2_11000001000100000000000000000
+000
+  488 00000064 40580000        DCD              2_01000000010110000000000000000
+000
+  489 00000068 40A00000        DCD              2_01000000101000000000000000000
+000
+  490 0000006C 41D00000        DCD              2_01000001110100000000000000000
+000
+  491 00000070 43000000        DCD              2_01000011000000000000000000000
+000
+  492 00000074 C3240000        DCD              2_11000011001001000000000000000
+000
+  493 00000078 40000000        DCD              2_01000000000000000000000000000
+000
+  494 0000007C C2080000        DCD              2_11000010000010000000000000000
+000
+  495 00000080 44080000        DCD              2_01000100000010000000000000000
+000
+  496 00000084 3EF00000        DCD              2_00111110111100000000000000000
+000
+  497 00000088 BF080000        DCD              2_10111111000010000000000000000
+000
+  498 0000008C C2080000        DCD              2_11000010000010000000000000000
+000
+  499 00000090 40480000        DCD              2_01000000010010000000000000000
+000
+  500 00000094 C0680000        DCD              2_11000000011010000000000000000
+000
+  501 00000098 44100000        DCD              2_01000100000100000000000000000
+000
+  502 0000009C 3EB00000        DCD              2_00111110101100000000000000000
+
+
+
+ARM Macro Assembler    Page 11 
+
+
+000
+  503 000000A0 C2280000        DCD              2_11000010001010000000000000000
+000
+  504 000000A4 C2C80000        DCD              2_11000010110010000000000000000
+000
+  505 000000A8 C2340000        DCD              2_11000010001101000000000000000
+000
+  506 000000AC 43900000        DCD              2_01000011100100000000000000000
+000
+  507 000000B0 42280000        DCD              2_01000010001010000000000000000
+000
+  508 000000B4 42600000        DCD              2_01000010011000000000000000000
+000
+  509 000000B8 3F280000        DCD              2_00111111001010000000000000000
+000
+  510 000000BC 42A00000        DCD              2_01000010101000000000000000000
+000
+  511 000000C0 C4140000        DCD              2_11000100000101000000000000000
+000
+  512 000000C4 43F00000        DCD              2_01000011111100000000000000000
+000
+  513 000000C8 C3D80000        DCD              2_11000011110110000000000000000
+000
+  514 000000CC C2F00000        DCD              2_11000010111100000000000000000
+000
+  515 000000D0 425C0000        DCD              2_01000010010111000000000000000
+000
+  516 000000D4 C1500000        DCD              2_11000001010100000000000000000
+000
+  517 000000D8 41A80000        DCD              2_01000001101010000000000000000
+000
+  518 000000DC BF300000        DCD              2_10111111001100000000000000000
+000
+  519 000000E0 3FB00000        DCD              2_00111111101100000000000000000
+000
+  520 000000E4 43700000        DCD              2_01000011011100000000000000000
+000
+  521 000000E8 C2400000        DCD              2_11000010010000000000000000000
+000
+  522 000000EC C1A80000        DCD              2_11000001101010000000000000000
+000
+  523 000000F0 3FC00000        DCD              2_00111111110000000000000000000
+000
+  524 000000F4 44180000        DCD              2_01000100000110000000000000000
+000
+  525 000000F8 42480000        DCD              2_01000010010010000000000000000
+000
+  526 000000FC 42080000        DCD              2_01000010000010000000000000000
+000
+  527 00000100 C1500000        DCD              2_11000001010100000000000000000
+000
+  528 00000104 42C40000        DCD              2_01000010110001000000000000000
+000
+  529 00000108 C15C0000        DCD              2_11000001010111000000000000000
+000
+  530 0000010C C1640000        DCD              2_11000001011001000000000000000
+000
+  531 00000110 BED80000        DCD              2_10111110110110000000000000000
+000
+
+
+
+ARM Macro Assembler    Page 12 
+
+
+  532 00000114 C3600000        DCD              2_11000011011000000000000000000
+000
+  533 00000118 42A40000        DCD              2_01000010101001000000000000000
+000
+  534 0000011C C0780000        DCD              2_11000000011110000000000000000
+000
+  535 00000120 41780000        DCD              2_01000001011110000000000000000
+000
+  536 00000124 3F940000        DCD              2_00111111100101000000000000000
+000
+  537 00000128 41400000        DCD              2_01000001010000000000000000000
+000
+  538 0000012C C1A00000        DCD              2_11000001101000000000000000000
+000
+  539 00000130 41A80000        DCD              2_01000001101010000000000000000
+000
+  540 00000134 C11C0000        DCD              2_11000001000111000000000000000
+000
+  541 00000138 C0940000        DCD              2_11000000100101000000000000000
+000
+  542 0000013C C3E80000        DCD              2_11000011111010000000000000000
+000
+  543 00000140 C3C00000        DCD              2_11000011110000000000000000000
+000
+  544 00000144 C3B00000        DCD              2_11000011101100000000000000000
+000
+  545 00000148 BF240000        DCD              2_10111111001001000000000000000
+000
+  546 0000014C 3E940000        DCD              2_00111110100101000000000000000
+000
+  547 00000150 41080000        DCD              2_01000001000010000000000000000
+000
+  548 00000154 44400000        DCD              2_01000100010000000000000000000
+000
+  549 00000158 41B00000        DCD              2_01000001101100000000000000000
+000
+  550 0000015C C2000000        DCD              2_11000010000000000000000000000
+000
+  551 00000160 C3DC0000        DCD              2_11000011110111000000000000000
+000
+  552 00000164 BEC00000        DCD              2_10111110110000000000000000000
+000
+  553 00000168 C15C0000        DCD              2_11000001010111000000000000000
+000
+  554 0000016C 3EB80000        DCD              2_00111110101110000000000000000
+000
+  555 00000170 C46C0000        DCD              2_11000100011011000000000000000
+000
+  556 00000174 C1780000        DCD              2_11000001011110000000000000000
+000
+  557 00000178 41000000        DCD              2_01000001000000000000000000000
+000
+  558 0000017C C24C0000        DCD              2_11000010010011000000000000000
+000
+  559 00000180 41500000        DCD              2_01000001010100000000000000000
+000
+  560 00000184 C1000000        DCD              2_11000001000000000000000000000
+000
+  561 00000188 C3CC0000        DCD              2_11000011110011000000000000000
+
+
+
+ARM Macro Assembler    Page 13 
+
+
+000
+  562 0000018C C41C0000        DCD              2_11000100000111000000000000000
+000
+  563 00000190 C0240000        DCD              2_11000000001001000000000000000
+000
+  564 00000194 C4480000        DCD              2_11000100010010000000000000000
+000
+  565 00000198 C2800000        DCD              2_11000010100000000000000000000
+000
+  566 0000019C         
+  567 0000019C                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=ARM9E --apcs=interwork 
+--depend=.\objects\project.d -o.\objects\project.o -IC:\Keil_v5\ARM\RV31\INC -I
+C:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION
+_VERSION SETA 525" --list=.\listings\project.lst project.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+Project 00000000
+
+Symbol: Project
+   Definitions
+      At line 1 in file project.s
+   Uses
+      None
+Comment: Project unused
+calExponent 00000154
+
+Symbol: calExponent
+   Definitions
+      At line 141 in file project.s
+   Uses
+      At line 135 in file project.s
+      At line 149 in file project.s
+
+calResult 00000174
+
+Symbol: calResult
+   Definitions
+      At line 151 in file project.s
+   Uses
+      At line 145 in file project.s
+      At line 448 in file project.s
+
+cal_continue 00000118
+
+Symbol: cal_continue
+   Definitions
+      At line 117 in file project.s
+   Uses
+      At line 439 in file project.s
+      At line 441 in file project.s
+
+calculate 000000E0
+
+Symbol: calculate
+   Definitions
+      At line 98 in file project.s
+   Uses
+      At line 74 in file project.s
+      At line 219 in file project.s
+      At line 435 in file project.s
+
+checkover 000003E4
+
+Symbol: checkover
+   Definitions
+      At line 361 in file project.s
+   Uses
+      At line 354 in file project.s
+Comment: checkover used once
+checkover_loop 00000410
+
+Symbol: checkover_loop
+   Definitions
+      At line 376 in file project.s
+   Uses
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 385 in file project.s
+Comment: checkover_loop used once
+checkover_loop_2 00000434
+
+Symbol: checkover_loop_2
+   Definitions
+      At line 387 in file project.s
+   Uses
+      At line 384 in file project.s
+      At line 395 in file project.s
+
+checkover_loop_end 00000454
+
+Symbol: checkover_loop_end
+   Definitions
+      At line 398 in file project.s
+   Uses
+      At line 394 in file project.s
+Comment: checkover_loop_end used once
+endline 000004E8
+
+Symbol: endline
+   Definitions
+      At line 450 in file project.s
+   Uses
+      At line 369 in file project.s
+Comment: endline used once
+equalSign 0000014C
+
+Symbol: equalSign
+   Definitions
+      At line 137 in file project.s
+   Uses
+      At line 128 in file project.s
+Comment: equalSign used once
+even_cal_loop 000002B4
+
+Symbol: even_cal_loop
+   Definitions
+      At line 255 in file project.s
+   Uses
+      At line 261 in file project.s
+Comment: even_cal_loop used once
+even_cal_loop_end 000002CC
+
+Symbol: even_cal_loop_end
+   Definitions
+      At line 263 in file project.s
+   Uses
+      At line 260 in file project.s
+Comment: even_cal_loop_end used once
+judge_result_zero 000004BC
+
+Symbol: judge_result_zero
+   Definitions
+      At line 437 in file project.s
+   Uses
+      At line 115 in file project.s
+Comment: judge_result_zero used once
+
+
+
+ARM Macro Assembler    Page 3 Alphabetic symbol ordering
+Relocatable symbols
+
+last_row_cal 000003A4
+
+Symbol: last_row_cal
+   Definitions
+      At line 339 in file project.s
+   Uses
+      At line 345 in file project.s
+Comment: last_row_cal used once
+last_row_cal_end 000003BC
+
+Symbol: last_row_cal_end
+   Definitions
+      At line 347 in file project.s
+   Uses
+      At line 344 in file project.s
+Comment: last_row_cal_end used once
+last_row_loop 000003C4
+
+Symbol: last_row_loop
+   Definitions
+      At line 351 in file project.s
+   Uses
+      At line 359 in file project.s
+Comment: last_row_loop used once
+last_row_padding 00000394
+
+Symbol: last_row_padding
+   Definitions
+      At line 332 in file project.s
+   Uses
+      At line 311 in file project.s
+Comment: last_row_padding used once
+load 0000045C
+
+Symbol: load
+   Definitions
+      At line 402 in file project.s
+   Uses
+      At line 408 in file project.s
+Comment: load used once
+load_data 000004F4
+
+Symbol: load_data
+   Definitions
+      At line 457 in file project.s
+   Uses
+      At line 34 in file project.s
+      At line 37 in file project.s
+      At line 400 in file project.s
+
+odd_Result_data 000004EC
+
+Symbol: odd_Result_data
+   Definitions
+      At line 453 in file project.s
+   Uses
+      At line 8 in file project.s
+      At line 31 in file project.s
+      At line 80 in file project.s
+
+
+
+ARM Macro Assembler    Page 4 Alphabetic symbol ordering
+Relocatable symbols
+
+      At line 84 in file project.s
+
+odd_cal_loop 00000494
+
+Symbol: odd_cal_loop
+   Definitions
+      At line 421 in file project.s
+   Uses
+      At line 427 in file project.s
+Comment: odd_cal_loop used once
+odd_cal_loop_end 000004AC
+
+Symbol: odd_cal_loop_end
+   Definitions
+      At line 429 in file project.s
+   Uses
+      At line 426 in file project.s
+Comment: odd_cal_loop_end used once
+odd_calculate 00000478
+
+Symbol: odd_calculate
+   Definitions
+      At line 411 in file project.s
+   Uses
+      At line 324 in file project.s
+Comment: odd_calculate used once
+odd_rolling 000000CC
+
+Symbol: odd_rolling
+   Definitions
+      At line 90 in file project.s
+   Uses
+      At line 285 in file project.s
+Comment: odd_rolling used once
+odd_rolling_setting 000000A8
+
+Symbol: odd_rolling_setting
+   Definitions
+      At line 76 in file project.s
+   Uses
+      At line 213 in file project.s
+Comment: odd_rolling_setting used once
+padding 00000318
+
+Symbol: padding
+   Definitions
+      At line 288 in file project.s
+   Uses
+      At line 269 in file project.s
+Comment: padding used once
+padding_loop 0000036C
+
+Symbol: padding_loop
+   Definitions
+      At line 317 in file project.s
+   Uses
+      None
+Comment: padding_loop unused
+padding_loop1 00000334
+
+
+
+ARM Macro Assembler    Page 5 Alphabetic symbol ordering
+Relocatable symbols
+
+
+Symbol: padding_loop1
+   Definitions
+      At line 298 in file project.s
+   Uses
+      At line 304 in file project.s
+Comment: padding_loop1 used once
+padding_loop1_end 0000034C
+
+Symbol: padding_loop1_end
+   Definitions
+      At line 306 in file project.s
+   Uses
+      At line 303 in file project.s
+Comment: padding_loop1_end used once
+padding_loop_end 00000374
+
+Symbol: padding_loop_end
+   Definitions
+      At line 321 in file project.s
+   Uses
+      At line 315 in file project.s
+Comment: padding_loop_end used once
+rolling 00000090
+
+Symbol: rolling
+   Definitions
+      At line 62 in file project.s
+   Uses
+      At line 286 in file project.s
+Comment: rolling used once
+rolling_setting 0000007C
+
+Symbol: rolling_setting
+   Definitions
+      At line 49 in file project.s
+   Uses
+      At line 24 in file project.s
+      At line 46 in file project.s
+      At line 330 in file project.s
+
+start 00000000
+
+Symbol: start
+   Definitions
+      At line 3 in file project.s
+   Uses
+      None
+Comment: start unused
+start2 00000040
+
+Symbol: start2
+   Definitions
+      At line 26 in file project.s
+   Uses
+      At line 409 in file project.s
+Comment: start2 used once
+store_even 0000024C
+
+
+
+
+ARM Macro Assembler    Page 6 Alphabetic symbol ordering
+Relocatable symbols
+
+Symbol: store_even
+   Definitions
+      At line 221 in file project.s
+   Uses
+      At line 162 in file project.s
+Comment: store_even used once
+store_odd_loop 00000218
+
+Symbol: store_odd_loop
+   Definitions
+      At line 203 in file project.s
+   Uses
+      At line 208 in file project.s
+Comment: store_odd_loop used once
+store_odd_loop_end 0000022C
+
+Symbol: store_odd_loop_end
+   Definitions
+      At line 210 in file project.s
+   Uses
+      At line 205 in file project.s
+Comment: store_odd_loop_end used once
+try 000004F0
+
+Symbol: try
+   Definitions
+      At line 455 in file project.s
+   Uses
+      At line 4 in file project.s
+      At line 27 in file project.s
+      At line 50 in file project.s
+      At line 59 in file project.s
+      At line 79 in file project.s
+      At line 190 in file project.s
+      At line 195 in file project.s
+      At line 328 in file project.s
+      At line 348 in file project.s
+      At line 412 in file project.s
+
+which_rolling_loop 000002F4
+
+Symbol: which_rolling_loop
+   Definitions
+      At line 275 in file project.s
+   Uses
+      At line 280 in file project.s
+Comment: which_rolling_loop used once
+which_rolling_loop_end 00000308
+
+Symbol: which_rolling_loop_end
+   Definitions
+      At line 282 in file project.s
+   Uses
+      At line 272 in file project.s
+      At line 279 in file project.s
+
+41 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+DataArea 00000000
+
+Symbol: DataArea
+   Definitions
+      At line 459 in file project.s
+   Uses
+      None
+Comment: DataArea unused
+Matrix_data 00000004
+
+Symbol: Matrix_data
+   Definitions
+      At line 462 in file project.s
+   Uses
+      At line 11 in file project.s
+      At line 15 in file project.s
+      At line 199 in file project.s
+      At line 251 in file project.s
+      At line 294 in file project.s
+      At line 334 in file project.s
+      At line 364 in file project.s
+      At line 372 in file project.s
+      At line 416 in file project.s
+
+Result_data 00000000
+
+Symbol: Result_data
+   Definitions
+      At line 460 in file project.s
+   Uses
+      At line 5 in file project.s
+      At line 28 in file project.s
+      At line 399 in file project.s
+
+3 symbols
+378 symbols in table

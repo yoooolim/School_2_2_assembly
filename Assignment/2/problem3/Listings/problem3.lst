@@ -1,0 +1,85 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000                 AREA             ARMex, CODE, READONLY
+    2 00000000                 ENTRY
+    3 00000000         start
+    4 00000000 E3A00001        MOV              r0,#1       ;1
+    5 00000004 E1A01080        LSL              r1,r0, #1   ;2
+    6 00000008 E1A02180        LSL              r2,r0, #3   ;8
+    7 0000000C         
+    8 0000000C E0823000        ADD              r3,r2,r0    ;9
+    9 00000010 E0833001        ADD              r3,r3,r1    ;11
+   10 00000014 E1A04003        MOV              r4,r3
+   11 00000018         
+   12 00000018 E3A07009        MOV              r7,#9
+   13 0000001C         
+   14 0000001C         Loop
+   15 0000001C E0833001        ADD              r3,r3,r1
+   16 00000020 E0834004        ADD              r4,r3,r4
+   17 00000024         
+   18 00000024         Finish
+   19 00000024 E2866001        ADD              r6,r6,#1
+   20 00000028 E1560007        CMP              r6,r7
+   21 0000002C 0A000000        BEQ              Endline
+   22 00000030 EAFFFFF9        B                Loop
+   23 00000034         
+   24 00000034         Endline
+   25 00000034 E1A0F00E        MOV              pc,lr
+   26 00000038         
+   27 00000038                 END
+Command Line: --debug --xref --diag_suppress=9931 --cpu=ARM9E --apcs=interwork 
+--depend=.\objects\problem3.d -o.\objects\problem3.o -IC:\Keil_v5\ARM\RV31\INC 
+-IC:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISI
+ON_VERSION SETA 525" --list=.\listings\problem3.lst problem3.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+ARMex 00000000
+
+Symbol: ARMex
+   Definitions
+      At line 1 in file problem3.s
+   Uses
+      None
+Comment: ARMex unused
+Endline 00000034
+
+Symbol: Endline
+   Definitions
+      At line 24 in file problem3.s
+   Uses
+      At line 21 in file problem3.s
+Comment: Endline used once
+Finish 00000024
+
+Symbol: Finish
+   Definitions
+      At line 18 in file problem3.s
+   Uses
+      None
+Comment: Finish unused
+Loop 0000001C
+
+Symbol: Loop
+   Definitions
+      At line 14 in file problem3.s
+   Uses
+      At line 22 in file problem3.s
+Comment: Loop used once
+start 00000000
+
+Symbol: start
+   Definitions
+      At line 3 in file problem3.s
+   Uses
+      None
+Comment: start unused
+5 symbols
+337 symbols in table

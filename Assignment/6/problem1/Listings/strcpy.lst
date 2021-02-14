@@ -1,0 +1,114 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000 0000000D 
+                       cr      equ              0x0d
+    2 00000000                 AREA             strcpy, CODE, READONLY
+    3 00000000                 ENTRY
+    4 00000000         main
+    5 00000000 E59F0034        LDR              r0, =OriginString ;get string
+    6 00000004 E59FA02C        LDR              r10, CpyString ;store copied st
+                                                            ring
+    7 00000008 E0211001        EOR              r1, r1, r1  ;initialize of r1
+    8 0000000C         
+    9 0000000C         Loop
+   10 0000000C E4D02001        LDRB             r2, [r0], #1
+   11 00000010 E352000D        CMP              r2, #cr
+   12 00000014 0A000002        BEQ              Done
+   13 00000018 E4CA2001        STRB             r2, [r10], #1
+   14 0000001C E2811001        ADD              r1, r1, #1
+   15 00000020         
+   16 00000020 EAFFFFF9        BAL              Loop
+   17 00000024         
+   18 00000024         Done
+   19 00000024 E3A0F000        mov              pc, #0
+   20 00000028 48 65 6C 
+              6C 6F 2C 
+              20 57 6F 
+              72 6C 64 
+              0D       OriginString
+                               DCB              "Hello, World", cr
+   21 00000035 00 00 00 
+              00004000 CpyString
+                               &                &4000
+   22 0000003C                 END
+              00000000 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=ARM9E --apcs=interwork 
+--depend=.\objects\strcpy.d -o.\objects\strcpy.o -IC:\Keil_v5\ARM\RV31\INC -IC:
+\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --predefine="__UVISION_V
+ERSION SETA 525" --list=.\listings\strcpy.lst strcpy.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+CpyString 00000038
+
+Symbol: CpyString
+   Definitions
+      At line 21 in file strcpy.s
+   Uses
+      At line 6 in file strcpy.s
+Comment: CpyString used once
+Done 00000024
+
+Symbol: Done
+   Definitions
+      At line 18 in file strcpy.s
+   Uses
+      At line 12 in file strcpy.s
+Comment: Done used once
+Loop 0000000C
+
+Symbol: Loop
+   Definitions
+      At line 9 in file strcpy.s
+   Uses
+      At line 16 in file strcpy.s
+Comment: Loop used once
+OriginString 00000028
+
+Symbol: OriginString
+   Definitions
+      At line 20 in file strcpy.s
+   Uses
+      At line 5 in file strcpy.s
+Comment: OriginString used once
+main 00000000
+
+Symbol: main
+   Definitions
+      At line 4 in file strcpy.s
+   Uses
+      None
+Comment: main unused
+strcpy 00000000
+
+Symbol: strcpy
+   Definitions
+      At line 2 in file strcpy.s
+   Uses
+      None
+Comment: strcpy unused
+6 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+cr 0000000D
+
+Symbol: cr
+   Definitions
+      At line 1 in file strcpy.s
+   Uses
+      At line 11 in file strcpy.s
+      At line 20 in file strcpy.s
+
+1 symbol
+341 symbols in table
